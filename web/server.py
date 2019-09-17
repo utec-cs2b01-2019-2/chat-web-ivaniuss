@@ -31,19 +31,44 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/usuarios',methods=['GET'])
+
+def todos_los_usuarios():
+    db_session=db.getSession(engine)
+    users=db_session.query(entities.User);
+    response="";
+    for user in users:
+        response+=user.username+"-"+user.password+";"
+
+        return response
+
+
 
 #login 
+
 @app.route('/authenticate', methods = ['POST'])
 def authenticate():
     username = request.form['username'] 
     password = request.form['password']
-    if username == 'ivan' and password == 'e':       
-        session['usuario'] = username;
-        return redirect('http://127.0.0.1:8000/static/chat.html')
-        
-    else:
+    db_session = db.getSession(engine)
 
-	    return "sorry " + username + " you are not a valid user"
+    user = db_session.query(entities.User).filter(entities.User.username == username).filter(entities.User.password == password).first()
+
+    if user != None:
+
+        session['usuario']=username;        
+        return redirect('http://127.0.0.1:8000/static/chat.html')
+    
+    else:
+        return"sorry"+username+" you are not a valid user"
+
+    #if username == 'ivan' and password == 'e':       
+    #    session['usuario'] = username;
+    #    return redirect('http://127.0.0.1:8000/static/chat.html')
+        
+    #else:
+
+	#    return "sorry " + username + " you are not a valid user"
 
 
 
