@@ -26,22 +26,26 @@ def suma(numero):
     session['suma'] = suma
     return str(suma)    
 
-#login 
-@app.route('/authenticate', methods = ['POST'])
-def authenticate():
-    username = request.form['username']
-    password = request.form['password']
-    if username == 'ivan' and password == 'e        ':
-        session['usuario'] = username;  
-        return "Welcome " + username;
-        
-    else:
-	    return "sorry " + username + "you are not a valid user"
-
-
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+
+#login 
+@app.route('/authenticate', methods = ['POST'])
+def authenticate():
+    username = request.form['username'] 
+    password = request.form['password']
+    if username == 'ivan' and password == 'e':       
+        session['usuario'] = username;
+        return redirect('http://127.0.0.1:8000/static/chat.html')
+        
+    else:
+
+	    return "sorry " + username + " you are not a valid user"
+
+
 
 @app.route('/static/<content>')
 def static_content(content):
