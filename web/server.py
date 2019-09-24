@@ -285,8 +285,8 @@ def create_group():
 def read_group(id):
     session_db=db.getSession(engine)
     group=session_db.query(entities.Group==id).filter(entities.Group.id == id).first()
-    data=json.dumps,cls=connector.AlchemyEncoder)
-    return Response(data,status=200,mimetype'application/json')
+    data=json.dumps(groups,cls=connector.AlchemyEncoder)
+    return Response(data,status=200,mimetype='application/json')
 
 
 
