@@ -78,7 +78,8 @@ def static_content(content):
 
 @app.route('/users', methods = ['POST'])
 def create_user():
-    c =  json.loads(request.form['values'])
+#    c =  json.loads(request.form['values'])
+    c =  json.loads(request.form.data)
     user = entities.User(
         username=c['username'],
         name=c['name'],
@@ -108,19 +109,20 @@ def get_users():
     data = dbResponse[:]
     return Response(json.dumps(data, cls=connector.AlchemyEncoder), mimetype='application/json')
 
-@app.route('/users', methods = ['PUT'])
+@app.route('/users/<id>', methods = ['PUT'])
 def update_user():
     session = db.getSession(engine)
-    id = request.form['key']
+ #   id = request.form['key']
     user = session.query(entities.User).filter(entities.User.id == id).first()
-    c = json.loads(request.form['values'])
+ #   c = json.loads(request.form['values'])
+    c = json.loads(request.form.data)
     for key in c.keys():
         setattr(user, key, c[key])
     session.add(user)
     session.commit()
     return 'Updated User'
 
-@app.route('/users', methods = ['DELETE'])
+@app.route('/users/<id>', methods = ['DELETE'])
 def delete_user():
     id = request.form['key']
     session = db.getSession(engine)
@@ -132,7 +134,7 @@ def delete_user():
 @app.route('/create_test_users', methods = ['GET'])
 def create_test_users():
     db_session = db.getSession(engine)
-    user = entities.User(name="David", fullname="Lazo", password="1234", username="qwerty")
+    user = entities.User(name="David", fullname="Lazo", password="e", username="qwerty")
     db_session.add(user)
     db_session.commit()
     return "Test user created!"
@@ -267,6 +269,26 @@ def current_user():
 def logout():
     session.clear()
     return render_template('login.html')
+
+#API DE GRUPOS
+@app.route('/groups', methods = ['POST'])
+def create_group():
+    c=json.loads(request.data)
+    group=entities.Group(name=c['name'])
+    session_db=db.getSession(engine)
+    session_db.add(group)
+    session_db.commit()
+    return 'created group'
+
+#API DE READ
+@app.route('/groups/<id>', methods = ['POST'])
+def read_group(id):
+    session_db=db.getSession(engine)
+    group=session_db.query(entities.Group==id).filter(entities.Group.id == id).first()
+    data=json.dumps,cls=connector.AlchemyEncoder)
+    return Response(data,status=200,mimetype'application/json')
+
+
 
 if __name__ == '__main__':
     app.secret_key = ".."
