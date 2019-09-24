@@ -281,7 +281,7 @@ def create_group():
     return 'created group'
 
 #API DE READ
-@app.route('/groups/<id>', methods = ['POST'])
+@app.route('/groups/<id>', methods = ['GET'])
 def read_group(id):
     session_db=db.getSession(engine)
     group=session_db.query(entities.Group==id).filter(entities.Group.id == id).first()
