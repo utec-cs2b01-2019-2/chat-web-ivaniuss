@@ -1,4 +1,4 @@
-from flask import Flask,render_template, request, session, Response, redirect
+from flask import Flask, render_template, request, session, Response, redirect
 from database import connector
 from model import entities
 import datetime
@@ -7,79 +7,51 @@ import time
 
 db = connector.Manager()
 engine = db.createEngine()
-
 app = Flask(__name__)
 
-#stateless interaction 
-@app.route('/cuantasletras/<nombre>')
-def cuantas_letras(nombre):
-    return str(len(nombre))
-
-#stateful interaction 
-@app.route('/suma/<numero>')
-
-def suma(numero):
-    if 'suma' not in session:
-         session['suma']=0
-    suma = session ['suma']
-    suma = suma + int(numero)
-    session['suma'] = suma
-    return str(suma)    
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-
-@app.route('/usuarios',methods=['GET'])
-
-def todos_los_usuarios():
-    db_session=db.getSession(engine)
-    users=db_session.query(entities.User);
-    response="";
-    for user in users:
-        response+=user.username+"-"+user.password+";"
-
-        return response
-
-
-
-#login 
-
-@app.route('/authenticate', methods = ['POST'])
-def authenticate():
-    username = request.form['username'] 
-    password = request.form['password']
-    db_session = db.getSession(engine)
-
-    user = db_session.query(entities.User).filter(entities.User.username == username).filter(entities.User.password == password).first()
-
-    if user != None:
-
-        session['usuario']=username;        
-        return redirect('http://127.0.0.1:8000/static/chat.html')
-    
-    else:
-        return"sorry"+username+" you are not a valid user"
-
-    #if username == 'ivan' and password == 'e':       
-    #    session['usuario'] = username;
-    #    return redirect('http://127.0.0.1:8000/static/chat.html')
-        
-    #else:
-
-	#    return "sorry " + username + " you are not a valid user"
-
-
-
 @app.route('/static/<content>')
 def static_content(content):
     return render_template(content)
 
+
+@app.route("/usuarios", methods = ["GET"])
+def todos_los_usuarios():
+    db_session = db.getSession(engine)
+    users = db_session.query(entities.User);
+    response = "";
+    for user in users:
+        response += user.username + " - "
+    return response;
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+    db_session = db.getSession(engine)
+    user = db_session.query(entities.User).filter(
+        entities.User.username == username
+    ).filter(
+        entities.User.password == password
+    ).first()
+
+    if user != None:
+        return render_template('chat.html')
+    else:
+        return "Sorry " +username+ " you are not a valid user"
+
+#def LstUsuarios():
+#    session = db.getSession(engine)
+
+
 @app.route('/users', methods = ['POST'])
 def create_user():
-#    c =  json.loads(request.form['values'])
-    c =  json.loads(request.form.data)
+    c = json.loads(request.data)
     user = entities.User(
         username=c['username'],
         name=c['name'],
@@ -89,7 +61,27 @@ def create_user():
     session = db.getSession(engine)
     session.add(user)
     session.commit()
-    return 'Created User'
+    return render_template('Login.html')
+
+'''
+@app.route('/users', methods = ['POST'])
+def create_user2():
+   username = request.form['username']
+   name = request.form['name']
+   fullname = request.form['fullname']
+   password = request.form['password']
+   user = entities.User(
+        username=username,
+        name=name,
+        fullname=fullname,
+        password=password,
+    )
+   session = db.getSession(engine)
+   session.add(user)
+   session.commit()
+   return 'Created User'
+'''
+
 
 @app.route('/users/<id>', methods = ['GET'])
 def get_user(id):
@@ -109,13 +101,13 @@ def get_users():
     data = dbResponse[:]
     return Response(json.dumps(data, cls=connector.AlchemyEncoder), mimetype='application/json')
 
-@app.route('/users/<id>', methods = ['PUT'])
-def update_user():
+@app.route('/users<id>', methods = ['PUT'])
+def update_user(id):
     session = db.getSession(engine)
- #   id = request.form['key']
+    #id = request.form['key']
     user = session.query(entities.User).filter(entities.User.id == id).first()
- #   c = json.loads(request.form['values'])
     c = json.loads(request.form.data)
+
     for key in c.keys():
         setattr(user, key, c[key])
     session.add(user)
@@ -123,8 +115,8 @@ def update_user():
     return 'Updated User'
 
 @app.route('/users/<id>', methods = ['DELETE'])
-def delete_user():
-    id = request.form['key']
+def delete_user(id):
+    #id = request.form['key']
     session = db.getSession(engine)
     user = session.query(entities.User).filter(entities.User.id == id).one()
     session.delete(user)
@@ -134,7 +126,7 @@ def delete_user():
 @app.route('/create_test_users', methods = ['GET'])
 def create_test_users():
     db_session = db.getSession(engine)
-    user = entities.User(name="David", fullname="Lazo", password="e", username="qwerty")
+    user = entities.User(name="David", fullname="Lazo", password="1234", username="qwerty")
     db_session.add(user)
     db_session.commit()
     return "Test user created!"
@@ -236,28 +228,28 @@ def send_message():
     session.commit()
     return 'Message sent'
 
-#@app.route('/authenticate', methods = ['POST'])
-#def authenticate():
-#    #Get data form request
-#    time.sleep(3)
-#    message = json.loads(request.data)  
-#    username = message['username']
-#    password = message['password']
+@app.route('/authenticate', methods = ['POST'])
+def authenticate():
+    #Get data form request
+    time.sleep(3)
+    message = json.loads(request.data)
+    username = message['username']
+    password = message['password']
 
     # Look in database
-#    db_session = db.getSession(engine)
+    db_session = db.getSession(engine)
 
-#    try:
-#        user = db_session.query(entities.User
-#            ).filter(entities.User.username==username
-#            ).filter(entities.User.password==password
-#            ).one()
-#        session['logged_user'] = user.id
-#        message = {'message':'Authorized'}
-#        return Response(message, status=200,mimetype='application/json')
-#    except Exception:
-#        message = {'message':'Unauthorized'}
-#        return Response(message, status=401,mimetype='application/json')
+    try:
+        user = db_session.query(entities.User
+            ).filter(entities.User.username==username
+            ).filter(entities.User.password==password
+            ).one()
+        session['logged_user'] = user.id
+        message = {'message':'Authorized'}
+        return Response(message, status=200,mimetype='application/json')
+    except Exception:
+        message = {'message':'Unauthorized'}
+        return Response(message, status=401,mimetype='application/json')
 
 @app.route('/current', methods = ['GET'])
 def current_user():
@@ -270,24 +262,64 @@ def logout():
     session.clear()
     return render_template('login.html')
 
-#API DE GRUPOS
-@app.route('/groups', methods = ['POST'])
+
+@app.route('/cuantasletras/<nombre>')
+def cuantas_letras(nombre):
+    return str(len(nombre))
+
+#API de grupos
+
+#1. CREATE
+
+@app.route('/groups',methods=['POST'])
 def create_group():
-    c=json.loads(request.data)
-    group=entities.Group(name=c['name'])
-    session_db=db.getSession(engine)
+    c = json.loads(request.data)
+    group = entities.Group(
+        name = c['name']
+    )
+    session_db = db.getSession(engine)
     session_db.add(group)
     session_db.commit()
-    return 'created group'
+    return 'Created Group'
 
-#API DE READ
-@app.route('/groups/<id>', methods = ['GET'])
+#2. READ
+@app.route('/groups<id>',methods=['GET'])
 def read_group(id):
-    session_db=db.getSession(engine)
-    group=session_db.query(entities.Group==id).filter(entities.Group.id == id).first()
-    data=json.dumps(groups,cls=connector.AlchemyEncoder)
-    return Response(data,status=200,mimetype='application/json')
+    session_db = db.getSession(engine)
+    group = session_db.query(entities.Group).filter(
+        entities.Group.id == id).first()
+    data = json.dumps(group, cls=connector.AlchemyEncoder)
+    return Response(data, status=200, mimetype='application/json')
 
+#3. GET
+@app.route('/groups<id>',methods=['GET'])
+def get_all_groups():
+    session_db = db.getSession(engine)
+    dbResponse = session_db.query(entities.Group)
+    data = dbResponse [:]
+    return Response(json.dumps(data, cls=connector.AlchemyEncoder), mimetype='application/json')
+
+#4. UPDATE
+@app.route('/groups/<id>', methods = ['PUT'])
+def update_group(id):
+    session_db = db.getSession(engine)
+    group = session_db.query(entities.Group).filter(entities.Group.id == id).first()
+    c = json.loads(request.data)
+
+    for key in c.keys():
+        setattr(group, key, c[key])
+    session.add(group)
+    session.commit()
+    return 'Updated Group'
+
+#5. DELETE
+@app.route('/groups/<id>', methods = ['DELETE'])
+def delete_group(id):
+    session_db = db.getSession(engine)
+    user = session_db.query(entities.Group).filter(entities.Group.id == id).one()
+    session_db.delete(user)
+    session_db.commit()
+    return "Deleted User"
 
 
 if __name__ == '__main__':

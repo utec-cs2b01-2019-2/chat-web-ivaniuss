@@ -1,15 +1,24 @@
 <!DOCTYPE html>
-<html lang ="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
-    <title>chatweb</title>  
+        <link rel="stylesheet" type="text/css" href="/static/css/login.css">
+        <title>Login</title>
+
 </head>
-<body>
-    <form method="post" action="/authenticate">
-    <input type="text" name="username"/>
-    <input type="password" name="password"/>
-    <input type="submit" value="Login"/>
-    </form>     
-</body>
+    <body>
+    <div class="inner-screen">
+        <div class="form">
+            <h2 class="log"> Login </h2>
+            <form method="post" action="/login">
+                <input type="text" placeholder="Enter your username" name="username" />
+                <input type="password" placeholder="password" name="password" />
+                <input type="submit" value="Log In" />
+                <!--<a href="https://google.com"target="_blank">Forgot password?</a> para insertar un link-->
+                <a href="http://127.0.0.1:8000/static/create_user.html"target="_blank">Don't have an account? Create User</a> <!--para insertar un link-->
+                <a href=/static/chat.html>Login</a>
+            </form>
+        </div>
+    </div>
+    </body>
 </html>
