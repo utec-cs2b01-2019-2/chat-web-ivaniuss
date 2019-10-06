@@ -1,5 +1,5 @@
 function sendMessage(){
-    alert("heeey");
+    console.log("mensaje enviado");
 }
 
 function get_all_users(){
@@ -7,13 +7,27 @@ function get_all_users(){
 
     $.getJSON("/users", function(data){
     var i = 0;
-    $.each(data, function(){
+    $.each(data,function(){
         user_to = data[i]['id'];
         e = '<div class = "alert" role="alert">';
-        e = e+'<div>'+data[i]['username']+'</div>';
+        e = e+ '<button type="button" class="btn btn-primary" id ="'+i+'" onclick="show_messages('+i+')">';
+        e = e+data[i]['username']+'</button>';
         e = e+'</div>';i = i+1;
         $("<div/>", {html:e}).appendTo("#users");
     });
     });
 
+}
+
+function show_messages(i){                       
+    console.log(i);
+    $("#message").empty();
+    $.getJSON("/messages", function(data){
+        message_to=data[i]['id'];
+        e = '<div class = "alert" role="alert">';
+        e = e+ '<p>'+data[i]['content']+'</button>';
+        e = e+'</div>';
+        $("<div/>", {html:e}).appendTo("#message");
+          
+    });
 }
