@@ -48,13 +48,13 @@ def login():
 #def LstUsuarios():
 #    session = db.getSession(engine)
 
-
+'''
 @app.route('/users', methods = ['POST'])
 def create_user():
     c = json.loads(request.data)
     user = entities.User(
-        username=c['username'],
         name=c['name'],
+        username=c['username'],
         fullname=c['fullname'],
         password=c['password']
     )
@@ -62,10 +62,10 @@ def create_user():
     session.add(user)
     session.commit()
     return render_template('Login.html')
-
 '''
+
 @app.route('/users', methods = ['POST'])
-def create_user2():
+def create_user():
    username = request.form['username']
    name = request.form['name']
    fullname = request.form['fullname']
@@ -80,7 +80,7 @@ def create_user2():
    session.add(user)
    session.commit()
    return 'Created User'
-'''
+
 
 
 @app.route('/users/<id>', methods = ['GET'])
@@ -101,22 +101,24 @@ def get_users():
     data = dbResponse[:]
     return Response(json.dumps(data, cls=connector.AlchemyEncoder), mimetype='application/json')
 
-@app.route('/users<id>', methods = ['PUT'])
-def update_user(id):
-    session = db.getSession(engine)
-    #id = request.form['key']
-    user = session.query(entities.User).filter(entities.User.id == id).first()
-    c = json.loads(request.form.data)
 
+
+@app.route('/users', methods = ['PUT'])
+def update_user():
+    session = db.getSession(engine)
+    id = request.form['key']
+    user = session.query(entities.User).filter(entities.User.id == id).first()
+    c = json.loads(request.form['values'])
     for key in c.keys():
         setattr(user, key, c[key])
     session.add(user)
     session.commit()
     return 'Updated User'
-
-@app.route('/users/<id>', methods = ['DELETE'])
-def delete_user(id):
-    #id = request.form['key']
+    
+   
+@app.route('/users', methods = ['DELETE'])
+def delete_user():
+    id = request.form['key']
     session = db.getSession(engine)
     user = session.query(entities.User).filter(entities.User.id == id).one()
     session.delete(user)
