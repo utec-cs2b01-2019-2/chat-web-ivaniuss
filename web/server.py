@@ -50,7 +50,7 @@ def login():
 
 '''
 @app.route('/users', methods = ['POST'])
-def create_user():
+def create_user2():
     c = json.loads(request.data)
     user = entities.User(
         name=c['name'],
