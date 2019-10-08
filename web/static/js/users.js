@@ -5,7 +5,7 @@ $(function(){
         dataSource: DevExpress.data.AspNet.createStore({
             key: "id",
             loadUrl: url,
-            insertUrl: url,
+            //insertUrl: url,
             updateUrl: url,
             deleteUrl: url,
             onBeforeSend: function(method, ajaxOptions) {
@@ -16,7 +16,7 @@ $(function(){
         editing: {
             allowUpdating: true,
             allowDeleting: true,
-            allowAdding: true
+            allowAdding: false
         },
 
         remoteOperations: {
