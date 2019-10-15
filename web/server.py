@@ -28,7 +28,6 @@ def todos_los_usuarios():
         response += user.username + " - "
     return response;
 
-
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form['username']
@@ -326,4 +325,4 @@ def delete_group(id):
 
 if __name__ == '__main__':
     app.secret_key = ".."
-    app.run(debug=True,port=8000, threaded=True, host=('127.0.0.1'))
+    app.run(debug=True,port=8000, threaded=True, host=('127.0.0.1'))                                                        

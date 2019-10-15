@@ -5,7 +5,7 @@ $(function(){
         dataSource: DevExpress.data.AspNet.createStore({
             key: "id",
             loadUrl: url,
-            //insertUrl: url,
+            insertUrl: url,
             updateUrl: url,
             deleteUrl: url,
             onBeforeSend: function(method, ajaxOptions) {
@@ -39,7 +39,7 @@ $(function(){
             allowEditing: true
         }, {
             dataField: "username"
-        }, {
+        }, {    
             dataField: "name"
         }, {
             dataField: "fullname"
