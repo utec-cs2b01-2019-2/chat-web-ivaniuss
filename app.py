@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-ENV = 'dev'
+ENV = 'pr'
 
 if ENV == 'dev':
     app.debug = True
