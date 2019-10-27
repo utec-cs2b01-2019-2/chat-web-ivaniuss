@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-#from send_mail import send_mail
+from send_mail import send_mail
 
 app = Flask(__name__)
 
-ENV = 'dev'
+ENV = 'prod'
 
 if ENV == 'dev':
     app.debug = True
@@ -60,7 +60,7 @@ def submit():
             data = newUser(username, password, name, lastName) 
             db.session.add(data)
             db.session.commit()
- #           send_mail(username, password, name, lastName)
+            send_mail(username, password, name, lastName)
             return render_template('success.html')
         return render_template('newUser.html', message='This username already ex')
 
