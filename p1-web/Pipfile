@@ -10,6 +10,10 @@ flask = "*"
 psycopg2 = "*"
 flask-sqlalchemy = "*"
 gunicorn = "*"
+db = "*"
+psql = "*"
+psycopg2-binary = "*"
+database = "*"
 
 [requires]
 python_version = "3.6"
