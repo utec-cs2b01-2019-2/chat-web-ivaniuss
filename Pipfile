@@ -13,8 +13,6 @@ gunicorn = "*"
 db = "*"
 psql = "*"
 psycopg2-binary = "*"
-flask-wtf = "*"
-flask-migrate = "*"
 database = "*"
 
 [requires]
