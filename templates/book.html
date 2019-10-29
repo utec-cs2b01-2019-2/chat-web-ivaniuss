@@ -4,13 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="/static/css/login.css" />
+    <link rel="stylesheet" href="/static/css/book.css" />
     <link rel="stylesheet" href="/static/css/libs/bootstrap.min.css"/>
-    <script src="/static/js/book.js"></script>
+
     <script src="/static/js/libs/jquery.js"></script>
-    <title>login</title>
+    <title>Book</title>
   </head>
   <body>
+  <div class="topnav">
+    <a><input type="submit" value="home"  class="btn btn-secondary" /></a>
+
+    <form action="/editUser" method="POST">
+      <a><input type="submit" value="editUser"  class="btn btn-secondary" /></a>
+
+    </form>
+  </div>
   <div class="container">
       {% if message %}
       <p class="message">{{ message | safe }}</p>

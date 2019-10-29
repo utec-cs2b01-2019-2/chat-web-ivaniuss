@@ -5,12 +5,13 @@ import psycopg2
 
 
 app = Flask(__name__)
-'''
 ENV = 'dev'
+
+
+
 '''
-
 ENV = 'prod'
-
+'''
 if ENV == 'dev':
     app.debug = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:ivanxD9494xD@localhost/p1-web'
@@ -50,67 +51,77 @@ class Book(db.Model):
     mail = db.Column(db.String(200),unique=True)
     descripcion = db.Column(db.Text())
     
-    def __init__(self, tipo, nombre, estado, descripcion):
+    def __init__(self, tipo, nombre, estado, mail,descripcion):
         self.tipo = tipo
         self.nombre = nombre
         self.estado = estado
+        self.mail = mail
         self.descripcion = descripcion
 
 
-def getTable():
-    try:
-        connection = psycopg2.connect (user="postgres",
+@app.route('/editUser',methods=['POST'])
+def editUser():
+    print(userId)
+    connection = psycopg2.connect (user="postgres",
                                        password="ivanxD9494xD",
                                        host="127.0.0.1",
                                        port="5432",
                                        database="p1-web")
-        cursor = connection.cursor ()
-        postgreSQL_select_Query = "select * from users"
+    cursor = connection.cursor ()
+    postgreSQL_select_Query = "select * from users"
 
-        cursor.execute (postgreSQL_select_Query)
-        print ("Selecting rows from users table using cursor.fetchall")
-        users = cursor.fetchall ()
+    cursor.execute (postgreSQL_select_Query)
+    print ("Selecting rows from users table using cursor.fetchall")
+    users = cursor.fetchall ()
 
-        print ("Print each row and it's columns values")
-        for row in users:
-            print ("Id = ", row[0], )
-            print ("username = ", row[1])
-            print ("password  = ", row[2])
-            print ("name  = ", row[3])
-            print ("lastname  = ", row[4], "\n")
+    print ("Print each row and it's columns values")
+    print(uuser,ppass)
 
-    except (Exception, psycopg2.Error) as error:
-        print ("Error while fetching data from PostgreSQL", error)
 
+    for fila in range (len (users)):
+        if users[fila][1] == uuser and users[fila][2] == ppass:
+            user = (users[fila][1])
+            password = (users[fila][2])
+            name = (users[fila][3])
+            lastname = (users[fila][4])
+
+
+
+
+    return render_template('editUser.html', username=user,password=password,name=name,lastname=lastname)
+
+
+
+
+'''
     finally:
         # closing database connection.
         if (connection):
             cursor.close ()
             connection.close ()
             print ("PostgreSQL connection is closed")
+'''
 
-
+'''
 def insertTable():
-    try:
-        connection = psycopg2.connect (user="postgres",
+   
+    connection = psycopg2.connect (user="postgres",
                                        password="ivanxD9494xD",
                                        host="127.0.0.1",
                                        port="5432",
                                        database="p1-web")
 
-        cursor = connection.cursor ()
+    cursor = connection.cursor ()
+    username=request.form()
+    postgres_insert_query = """ INSERT INTO users (id, username, password, name, lastname) VALUES (%s,%s,%s,%s,%s)"""
+    record_to_insert = (9, 'One Plus 6', "950","r","f")
+    cursor.execute (postgres_insert_query, record_to_insert)
 
-        postgres_insert_query = """ INSERT INTO users (id, username, password, name, lastname) VALUES (%s,%s,%s,%s,%s)"""
-        record_to_insert = (9, 'One Plus 6', "950","r","f")
-        cursor.execute (postgres_insert_query, record_to_insert)
+    connection.commit ()
+    count = cursor.rowcount
+    print (count, "Record inserted successfully into usuario table")
 
-        connection.commit ()
-        count = cursor.rowcount
-        print (count, "Record inserted successfully into usuario table")
-
-    except (Exception, psycopg2.Error) as error:
-        if (connection):
-            print ("Failed to insert record into usuario table", error)
+    
 
     finally:
         # closing database connection.
@@ -118,80 +129,58 @@ def insertTable():
             cursor.close ()
             connection.close ()
             print ("PostgreSQL connection is closed")
+'''
+@app.route('/update',methods=['POST'])
+def updateTable():
 
 
-def updateTable(userId, password):
-    try:
-        connection = psycopg2.connect (user="postgres",
+    connection = psycopg2.connect (user="postgres",
                                        password="ivanxD9494xD",
                                        host="127.0.0.1",
                                        port="5432",
                                        database="p1-web")
 
-        cursor = connection.cursor ()
+    cursor = connection.cursor ()
 
-        print ("Table Before updating record ")
-        sql_select_query = """select * from users where id = %s"""
-        cursor.execute (sql_select_query, (userId,))
-        record = cursor.fetchone ()
-        print (record)
+    if request.method == 'POST':
 
-        # Update single record now
-        sql_update_query = """Update users set password = %s where id = %s"""
-        cursor.execute (sql_update_query, (password, userId))
-        connection.commit ()
-        count = cursor.rowcount
-        print (count, "Record Updated successfully ")
+        password = request.form['password']
 
-        print ("Table After updating record ")
-        sql_select_query = """select * from users where id = %s"""
-        cursor.execute (sql_select_query, (userId,))
-        record = cursor.fetchone ()
-        print (record)
+    sql_select_query = """select * from users where id = %s"""
+    cursor.execute (sql_select_query, (userId,))
+    record = cursor.fetchone ()
+    print (record)
 
-    except (Exception, psycopg2.Error) as error:
-        print ("Error in update operation", error)
+    # Update single record now
+    sql_update_query = """Update users set password = %s where id = %s"""
+    cursor.execute (sql_update_query, (password,userId))
+    connection.commit ()
+    count = cursor.rowcount
+    print (count, "Record Updated successfully ")
+    return "updated"
 
-    finally:
-        # closing database connection.
-        if (connection):
-            cursor.close ()
-            connection.close ()
-            print ("PostgreSQL connection is closed")
 
-    id = 8
-    password = "eroz123"
-    updateTable(id, password)
+@app.route('/delete',methods=['POST'])
+def delete():
 
-def deleteTable(userId):
-    try:
-        connection = psycopg2.connect (user="postgres",
+
+    connection = psycopg2.connect (user="postgres",
                                        password="ivanxD9494xD",
                                        host="127.0.0.1",
                                        port="5432",
                                        database="p1-web")
 
-        cursor = connection.cursor()
+    cursor = connection.cursor()
 
-        # Update single record now
-        sql_delete_query = """Delete from users where id = %s"""
-        cursor.execute(sql_delete_query, (userId,))
-        connection.commit()
-        count = cursor.rowcount
-        print(count, "Record deleted successfully ")
+    # Update single record now
+    sql_delete_query = """Delete from users where id = %s"""
+    cursor.execute(sql_delete_query, (userId,))
+    connection.commit()
+    count = cursor.rowcount
+    print(count, "Record deleted successfully ")
+    return "succeed"
 
-    except (Exception, psycopg2.Error) as error:
-        print("Error in Delete operation", error)
 
-    finally:
-        # closing database connection.
-        if (connection):
-            cursor.close()
-            connection.close()
-            print("PostgreSQL connection is closed")
-
-    id = 9
-    deleteTable(id)
 
 
 @app.route('/')
@@ -223,8 +212,15 @@ def submit():
             return render_template('success.html')
         return render_template('newUser.html', message='This username already exists')
 
+
+
+
 @app.route ('/login', methods=['POST'])
 def login():
+    global uuser
+    global ppass
+    global userId
+
     connection = psycopg2.connect (user="postgres",
                                    password="ivanxD9494xD",
                                    host="127.0.0.1",
@@ -249,7 +245,14 @@ def login():
         else:
             for columna in range(len(users)):
                 if users[columna][1] == username and users[columna][2] == password:
+
+                    userId = users[columna][0]
+
+                    uuser = username
+                    ppass = password
+
                     return render_template('book.html')
+
             return render_template('login.html',message='Enter a valid user or password')
 
 @app.route ('/enviar', methods=['POST'])
@@ -268,7 +271,7 @@ def enviar():
             data = Book (tipo, nombre, estado, descripcion, mail)
             db.session.add (data)
             db.session.commit()
-            send_mail(tipo, nombre, estado, descripcion, mail)
+            send_mail(tipo, nombre, estado, mail, descripcion)
             return "solicitud creada, le contactaremos a traves de su correo"
         return render_template ('book.html', message='This name already exists')
 
