@@ -1,6 +1,6 @@
   
 $(function(){
-    var url = "/users";
+    var url = "postgres://cmrxbadkuqhcpf:f285929a2e21a5547d29bcd8accef35bea2dfccd269ca90ee78bf9c4dd0252d8@ec2-23-21-115-109.compute-1.amazonaws.com:5432/d7cf77eum358n2/users";
     $("#grid").dxDataGrid({
         dataSource: DevExpress.data.AspNet.createStore({
             key: "id",
