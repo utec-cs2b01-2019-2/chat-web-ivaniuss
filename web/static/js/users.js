@@ -1,53 +1,50 @@
+  
 $(function(){
-    var url = "http:127.0.0.1:8000/users";
-
+    var url = "http://127.0.0.1:8000/users";
     $("#grid").dxDataGrid({
         dataSource: DevExpress.data.AspNet.createStore({
             key: "id",
-            loadUrl: url ,
-            insertUrl: url ,
-            updateUrl: url ,
-            deleteUrl: url ,
+            loadUrl: url,
+            insertUrl: url,
+            updateUrl: url,
+            deleteUrl: url,
             onBeforeSend: function(method, ajaxOptions) {
                 ajaxOptions.xhrFields = { withCredentials: true };
             }
         }),
+
         editing: {
             allowUpdating: true,
             allowDeleting: true,
-            allowAdding: true
+            allowAdding: false
         },
+
         remoteOperations: {
             sorting: true,
             paging: true
         },
+
         paging: {
             pageSize: 12
         },
+
         pager: {
-            showPageSizeSelector: true,
+            showPageSizeSelector: false,
             allowedPageSizes: [8, 12, 20]
         },
+
         columns: [{
-                dataField: "id",
-                dataType: "number",
-                allowEditing: false},
-
-                {dataField: "username",
-                dataType: "text",
-                allowEditing: true},
-
-                {dataField: "name",
-                dataType: "text",
-                allowEditing: true},
-
-                {dataField: "fullname",
-                dataType: "text",
-                allowEditing: true},
-
-                {dataField: "password",
-                dataType: "text",
-                allowEditing: true}
-                ]
-                        }).dxDataGrid("instance");
-            });
+            dataField: "id",
+            dataType: "number",
+            allowEditing: true
+        }, {
+            dataField: "username"
+        }, {    
+            dataField: "name"
+        }, {
+            dataField: "fullname"
+        }, {
+            dataField: "password"
+        }, ],
+    }).dxDataGrid("instance");
+});

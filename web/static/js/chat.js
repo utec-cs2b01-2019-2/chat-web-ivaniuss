@@ -1,100 +1,74 @@
-var currentUserId =0;
-var currentClickedId = 0;
-function loggedUser(){
-    $.ajax({
-        url:'/current',
-        type:'GET',
-        contentType: 'application/json',
-        dataType:'json',
-        success: function (response) {
-            $('#cu_username').html(response['username'])
-            var name = response['name']+" "+response['fullname'];
-            currentUserId = response['id']
-            $('#cu_name').html(name);
-            allUsers();
-        },
-        error: function(response){
-            alert(JSON.stringify(response))
-        }
-        });
-}
-function allUsers(){
-    $.ajax({
-        url:'/users',
-        type:'GET',
-        contentType: 'application/json',
-        dataType:'json',
-        success:function (response) {
-            var i=0;
-            $.each(response,function(){
-                f = '<div class="alert alert-secondary" role="alert" onclick=loadMessages('+currentUserId+','+response[i].id+') >';
-                f = f + response[i].username;
-                f = f + '</div>';
-                i = i + 1;
-                $('#allusers').append(f);
-            });
-        },
-        error: function(response){
-            aler(JSON.stringify(response));
-        }
+function get_current(){
+    console.log("voy a traer al usuario logueado")
+    $.getJSON("/current", function (data){
+        console.log("current user is " +data['username'])
+        get_all_users(data['id']);
     });
 }
 
-function loadMessages(user_from_id, user_to_id){
-        //alert(user_from_id);
-        //alert(user_to_id);
-        currentClickedId = user_to_id;
-        $.ajax({
-            url:'/messages/'+user_from_id+"/"+user_to_id,
-            type:'GET',
-            contentType: 'application/json',
-            dataType:'json',
 
-            success: function(response){
-                $('#messages').html("");
-                var i = 0;
-                $.each(response, function(){
-                if(response[i]["user_from_id"]== user_to_id){
-                    f = '<div class="d-flex justify-content-start mb-4"><div class="msg_cotainer">';
-                }
-                else {
-                    f = '<div class="d-flex justify-content-end mb-4"><div class="msg_cotainer_send" align="right" >';
-                }
-                    f = f + response[i].content;
-                    f = f + '</div>';
-                    i = i+1;
-                    $('#messages').append(f);
-                });
-            },
-            error: function(response){
-                alert(JSON.stringify(response));
-            }
-        });
+
+function getMessages(user_from_id,user_to_id){
+    $("#boxMessage").empty();
+    //alert("Voy a traer los mensajes entre" + user_from_id+ " y " + user_to_id);
+    var url = "/messages/"+user_from_id+"/"+user_to_id;
+    $.getJSON(url, function(data){
+    var i =0;
+    $.each(data, function(){
+        user_to = data[i]["id"];
+        e = '<div class="alert" role="alert" >';
+        e = e+"<div>"+data[i]['content']+"</div>";
+        e = e+"</div>";
+        $("<div/>", {html:e}).appendTo("#boxMessage");
+
+        i=i+1;
+    });
+    });
 }
 
-function sendMessage(){
-        var message = $('#postmessage').val();
-        $('#postmessage').val('');
+function get_all_users(user_from_id){
 
-        var data = JSON.stringify({
-                "user_from_id": currentUserId,
-                "user_to_id": currentClickedId,
-                "content": message
-            });
+    var x = document.getElementById("get_message");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+  }
+    console.log("voy a traer todos los usuarios");
 
-        $.ajax({
-            url:'/messages',
-            type:'POST',
-            contentType: 'application/json',
-            data : data,
-            dataType:'json',
-            success: function(response){
-                loadMessages(currentUserId, currentClickedId)
-            },
-            error: function(response){
-                alert(JSON.stringify(response));
-            }
-        });
-    }
+    $.getJSON("/users", function(data){
+    var i = 0;
+    $.each(data,function(){
+        if(user_from_id!=data[i]['id']){  
+            user_to = data[i]['id'];                 
+            e = '<div class = "alert" role="alert" onclick="getMessages('+user_from_id+','+data[i]['id']+')">';
+            e = e+ '<div>'+data[i]['username']+'</div>';
+            e = e+'</div>';          
+            $("<div/>", {html:e}).appendTo("#users");}
+            i = i+1;
+    });
+    });
 
 
+
+}
+
+function show_messages(){                       
+    console.log(i);
+    $("#message").empty();
+    $.getJSON("/messages", function(data){
+        message_to=data[i]['id'];
+        e = '<div class = "alert" role="alert">';
+        e = e+ '<p>'+data[i]['content']+'</button>';
+        e = e+'</div>'; 
+        $("<div/>", {html:e}).appendTo("#message");
+    });
+}
+
+function send_message(){    
+    var x=document.getElementById("txtMessage").value;
+    $("<div/>", {html:x}).appendTo("#message");  
+   
+}
+
+        
