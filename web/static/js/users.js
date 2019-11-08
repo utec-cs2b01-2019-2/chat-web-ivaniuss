@@ -1,6 +1,6 @@
   
 $(function(){
-    var url = "/users";
+    var url = "/http:127.0.0.1:80/users";
     $("#grid").dxDataGrid({
         dataSource: DevExpress.data.AspNet.createStore({
             key: "id",
