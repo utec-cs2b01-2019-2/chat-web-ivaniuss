@@ -2,24 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
-    <link rel="stylesheet" href="/static/css/libs/bootstrap.min.css">
-    <script src="/static/js/libs/bootstrap.min.js" ></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="/static/js/login.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="/static/js/libs/jquery.js" ></script>
+    <link rel="stylesheet" href="/static/css/libs/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/chatStyle.css">
+    <script src="/static/js/libs/bootstrap.js" ></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/login.css">
+        <title>Login</title>
 
 </head>
-<body>
-    <div class=".inner-screen">
+    <body>
+    <div class="inner-screen">
         <div class="form">
-            <form>
-                <input type="text" placeholder="Enter your username" name="username" id="username"/>
-                <input type="password" placeholder="Enter your password" name="password" id="password"/>
-                <input type="button" value="login" onclick="getData()"/>
+            <h2 class="log"> Login </h2>
+            <form method="post" action="/login">
+                <input type="text" id="username" placeholder="Enter your username" name="username" />
+                <input type="password" id= "password" placeholder="password" name="password" />
+                <button style="align-self: center "  type="button" class="btn btn-primary" onclick="login()" value="Log In"> Login</button>
+                
             </form>
+            <button type="btn" class="btn btn-primary"
+            onclick="window.location.href='http://127.0.0.1:8000/static/Create_user.html'">Create user</button>
         </div>
+        
     </div>
-
-</body>
+    </body>
 </html>
